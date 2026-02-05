@@ -1,23 +1,23 @@
-# Simulateur de Bourse Multi-Threads
+# Multi-Threaded Stock Exchange Simulator
 
 ## 📋 Description
-Simulation d'un carnet d'ordres (`OrderBook`) partagé entre plusieurs traders concurrents.
+Simulation of an `OrderBook` shared among multiple concurrent traders.
 
 ---
 
-## 🔄 Évolution du Projet
+## 🔄 Project Evolution
 
-### Phase 0 : Sans synchronisation ⚠️
-**Branche :** `phase0-unsafe-race-condition`
+### Phase 0: Without Synchronization ⚠️
+**Branch:** `phase0-unsafe-race-condition`
 
-Race conditions et lost updates. Données incohérentes.
+Race conditions and lost updates. Inconsistent data.
 
 ---
 
-### Phase 1 : Synchronisation avec `synchronized` 🔒
-**Branche :** `phase1-synchronized-solution`
+### Phase 1: Synchronization with `synchronized` 🔒
+**Branch:** `phase1-synchronized-solution`
 
-**Code :**
+**Code:**
 ```java
 public synchronized double getPrice() {
     return price;
@@ -28,23 +28,23 @@ public synchronized void updatePrice(double newPrice) {
 }
 ```
 
-**Garanties :**
+**Guarantees:**
 - ✅ Thread-safe
-- ✅ Pas de race conditions
-- ❌ **Problème** : Contention et blocage des threads
+- ✅ No race conditions
+- ❌ **Problem**: Thread contention and blocking
 
-**Limitation :**
+**Limitation:**
 ```
 5 traders  → ~100 ms
-50 traders → ~2000 ms  ⚠️ ralentissement linéaire
+50 traders → ~2000 ms  ⚠️ linear slowdown
 ```
 
 ---
 
-### Phase 2 : Variables atomiques (Lock-Free) ⚡
-**Branche :** `phase2-atomic-lockfree` ← **Branche actuelle**
+### Phase 2: Atomic Variables (Lock-Free) ⚡
+**Branch:** `phase2-atomic-lockfree` ← **Current branch**
 
-**Code :**
+**Code:**
 ```java
 private final AtomicLong priceInCents;
 
@@ -57,32 +57,32 @@ public void updatePrice(double newPrice) {
 }
 ```
 
-**Améliorations :**
-- ✅ **Pas de blocage** : les threads ne s'attendent plus
-- ✅ **Performance** : opérations CPU atomiques (CAS)
-- ✅ **Scalabilité** : temps constant même avec 100+ threads
+**Improvements:**
+- ✅ **No blocking**: threads no longer wait for each other
+- ✅ **Performance**: atomic CPU operations (CAS)
+- ✅ **Scalability**: constant time even with 100+ threads
 
-**Comparaison de performance :**
+**Performance comparison:**
 ```
               5 traders    50 traders    500 traders
 synchronized    100 ms      2000 ms       20000 ms
 AtomicLong       50 ms       150 ms         500 ms
 ```
 
-**Ce que tu apprends :**
-- Différence entre bloquer un thread (`synchronized`) et opérations atomiques
-- Programmation lock-free et wait-free
-- Instructions CPU CAS (Compare-And-Swap)
+**What you learn:**
+- Difference between blocking threads (`synchronized`) and atomic operations
+- Lock-free and wait-free programming
+- CPU CAS (Compare-And-Swap) instructions
 
 ---
 
-## 🚀 Exécution
+## 🚀 Execution
 ```bash
 javac com/trading/*.java
 java com.trading.Main
 ```
 
 ## 📚 Branches
-- `phase0-unsafe-race-condition` : Race conditions
-- `phase1-synchronized-solution` : Synchronisation avec verrous
-- `phase2-atomic-lockfree` : Variables atomiques (performance optimale)
+- `phase0-unsafe-race-condition`: Race conditions
+- `phase1-synchronized-solution`: Synchronization with locks
+- `phase2-atomic-lockfree`: Atomic variables (optimal performance)
