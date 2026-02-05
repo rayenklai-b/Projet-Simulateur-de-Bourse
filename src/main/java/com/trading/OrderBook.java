@@ -8,11 +8,11 @@ public class OrderBook {
         this.price = initialPrice;
     }
 
-    public double getPrice() {
+    public synchronized double getPrice() {
         return price;
     }
 
-    public void updatePrice(double newPrice) {
+    public synchronized void updatePrice(double newPrice) {
         this.price = newPrice;
     }
 }
